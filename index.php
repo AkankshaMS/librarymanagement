@@ -1,35 +1,21 @@
 <?php
 session_start();
-error_reporting(0);
 include('includes/config.php');
-if($_SESSION['login']!=''){
-$_SESSION['login']='';
-}
 if(isset($_POST['login']))
 {
-  
-$email=$_POST['emailid'];
+$username=$_POST['username'];
 $password=md5($_POST['password']);
-$sql ="SELECT EmailId,Password,StudentId,Status FROM tblstudents WHERE EmailId=:email and Password=:password";
+$sql ="SELECT UserName,Password FROM admin WHERE UserName=:username and Password=:password";
 $query= $dbh -> prepare($sql);
-$query-> bindParam(':email', $email, PDO::PARAM_STR);
+$query-> bindParam(':username', $username, PDO::PARAM_STR);
 $query-> bindParam(':password', $password, PDO::PARAM_STR);
 $query-> execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
-
 if($query->rowCount() > 0)
 {
- foreach ($results as $result) {
- $_SESSION['stdid']=$result->StudentId;
-if($result->Status==1)
-{
-$_SESSION['login']=$_POST['emailid'];
+$_SESSION['alogin']=$_POST['username'];
 echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
-}
- }
-} 
-
-else{
+} else{
 echo "<script>alert('Invalid Details');</script>";
 }
 }
@@ -41,7 +27,7 @@ echo "<script>alert('Invalid Details');</script>";
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Library Management System | </title>
+    <title>Online Library Management System</title>
     <!-- BOOTSTRAP CORE STYLE  -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME STYLE  -->
@@ -60,7 +46,7 @@ echo "<script>alert('Invalid Details');</script>";
 <div class="container">
 <div class="row pad-botm">
 <div class="col-md-12">
-<h4 class="header-line">Student Login</h4>
+<h4 class="header-line">ADMIN LOGIN FORM</h4>
 </div>
 </div>
              
@@ -75,17 +61,14 @@ echo "<script>alert('Invalid Details');</script>";
 <form role="form" method="post">
 
 <div class="form-group">
-<label>Enter Email id</label>
-<input class="form-control" type="text" name="emailid" required autocomplete="off" />
+<label>Enter Username</label>
+<input class="form-control" type="text" name="username" required />
 </div>
 <div class="form-group">
 <label>Password</label>
-<input class="form-control" type="password" name="password" required autocomplete="off"  />
-<p class="help-block"><a href="user-forgot-password.php">Forgot Password</a></p>
+<input class="form-control" type="password" name="password" required />
 </div>
-
-
- <button type="submit" name="login" class="btn btn-info">LOGIN </button> | <a href="signup.php">Register? </a>
+ <button type="submit" name="login" class="btn btn-info">LOGIN </button>
 </form>
  </div>
 </div>
@@ -97,8 +80,12 @@ echo "<script>alert('Invalid Details');</script>";
     </div>
     </div>
      <!-- CONTENT-WRAPPER SECTION END-->
-
-
-
+ <?php include('includes/footer.php');?>
+      <!-- FOOTER SECTION END-->
+    <script src="assets/js/jquery-1.10.2.js"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script src="assets/js/bootstrap.js"></script>
+      <!-- CUSTOM SCRIPTS  -->
+    <script src="assets/js/custom.js"></script>
 </body>
 </html>
